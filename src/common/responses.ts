@@ -1,16 +1,26 @@
-import { Boom } from '@hapi/boom'
+import { HttpError } from '../types/error'
 
-export const okResponse = <TBody>(body: TBody, opt: ResponseInit): Response => {
+export const okResponse = <TBody>(
+    body: TBody,
+    opt?: ResponseInit,
+): Response => {
+    if (opt) {
+        opt.status = opt.status || 200
+        opt.statusText = opt.statusText || 'OK'
+    }
+
     return new Response(JSON.stringify(body), opt)
 }
 
-export const errorResponse = (error: Boom) => {
-    return new Response(error.message, {
-        status: error.output.payload.statusCode,
-        statusText: error.output.payload.error,
-    })
-    //  new Response(error.message, {
-    //       status: error.output.statusCode,
-    //       statusText: error.output.error,
-    //   })
+export const errorResponse = (error: HttpError) => {
+    const { message, status, statusText } = error
+    return message && status && statusText
+        ? new Response(message, {
+              status,
+              statusText,
+          })
+        : new Response('Internal server error', {
+              status: 500,
+              statusText: 'Internal',
+          })
 }

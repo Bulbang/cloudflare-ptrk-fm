@@ -1,25 +1,20 @@
 import { Router } from 'itty-router'
-import { errorResponse, okResponse } from './common/responses'
-
-import { unauthorized, badRequest} from '@hapi/boom'
+import { okResponse } from './common/responses'
+import { authorizer } from './middlewares/authorizer'
 
 const router = Router()
 
+router.get('/', authorizer, (req)=> { return okResponse("", {status:200, statusText: "OK"}) })
 
-router.get('/', () => {
-    return okResponse<{ hello: string }>(
-        { hello: `${LOGIN}:${PASSWORD}` },
-        { status: 200, statusText: 'OK' },
-    )
-})
+router.get('/articles', () => {})
 
-router.get('/error-with-payload', () => {
-    return errorResponse(unauthorized('Putin'))
-})
+router.get('/articles/:id', () => {})
 
-router.get('/error-without-payload', () => {
-    return errorResponse(badRequest('Huy'))
-})
+router.post('articles/create', ()=>{})
+
+router.put('/articles/:id', ()=>{})
+
+router.get('/getPresignUrl', ()=>{})
 
 addEventListener('fetch', (e) => {
     e.respondWith(router.handle(e.request))
