@@ -1,10 +1,17 @@
-import { HttpError } from "../types/error"
+import { HttpError } from '../types/error'
 
-export const unauthorized = (message: string) => {
-    const payload : HttpError = {
+const statusCodesMap: { [code: number]: string } = {
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    500: 'Internal Server Error',
+}
+
+export const errorBuilder = (status: number, message: string): HttpError => {
+    return {
         message,
-        status: 401,
-        statusText: 'Unauthorized'
+        status,
+        statusText: statusCodesMap[status],
     }
-    return payload
 }

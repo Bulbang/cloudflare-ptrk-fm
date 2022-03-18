@@ -1,10 +1,10 @@
 name = "ptrk-fm-worker"
-type = "webpack"
+type = "javascript"
 
 account_id = "AccountID"
 workers_dev = true
 compatibility_date = "2022-03-11"
-webpack_config = "webpack.config.js"
+
 
 [vars]
 LOGIN = "YourLogin"
