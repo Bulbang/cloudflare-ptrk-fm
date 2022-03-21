@@ -1,5 +1,6 @@
 import CyrillicToTranslit = require('cyrillic-to-translit-js')
 import { v4 } from 'uuid'
+
 import { errorBuilder } from '../common/errors'
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 
@@ -96,23 +97,9 @@ export class ArticleRepository {
             throw error
         }
 
-        try {
-            for (const [key, val] of Object.entries(updateValues)) {
-                if (
-                    key === 'id' ||
-                    key === 'slug' ||
-                    key === 'updated_at' ||
-                    key === 'created_at' ||
-                    key === 'url' ||
-                    key === 'file_id'
-                )
-                    throw errorBuilder(403, `Key: '${key}' unable to update`)
-                article[key] = val
-            }
-            article['updated_at'] = +new Date()
-        } catch (error) {
-            throw error
-        }
+        for (const [key, val] of Object.entries(updateValues))
+            article[key] = val
+        article['updated_at'] = +new Date()
 
         try {
             await ARTICLES.delete(id)

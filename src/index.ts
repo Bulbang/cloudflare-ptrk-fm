@@ -26,7 +26,12 @@ router.post(
     routeController.putArticle,
 )
 
-router.put('/articles/:id', authorizer, BodyValidator(articleUpdateSchema),  routeController.updateArticle)
+router.put(
+    '/articles/:id',
+    authorizer,
+    BodyValidator(articleUpdateSchema),
+    routeController.updateArticle,
+)
 
 router.get('/getPresignUrl', authorizer, routeController.createPresignPost)
 

@@ -1,4 +1,5 @@
-import S3 = require('aws-sdk/clients/s3')
+import { S3 } from '@aws-sdk/client-s3'
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 import { v4 } from 'uuid'
 
 import { errorResponse, okResponse } from '../common/responses'
@@ -6,7 +7,7 @@ import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 import { ArticleRepository } from './ArticleRepository'
 
 export class RouteController {
-    async getArticles(req: Request) {
+    async getArticles(): Promise<Response> {
         const articleRepository = new ArticleRepository()
         try {
             const articles = await articleRepository.getMany()
@@ -16,7 +17,9 @@ export class RouteController {
         }
     }
 
-    async getArticle(req: Request & { params: { id: string } }) {
+    async getArticle(
+        req: Request & { params: { id: string } },
+    ): Promise<Response> {
         const articleRepository = new ArticleRepository()
         try {
             const article = await articleRepository.getById(req.params.id)
@@ -26,7 +29,7 @@ export class RouteController {
         }
     }
 
-    async putArticle(req: Request) {
+    async putArticle(req: Request): Promise<Response> {
         const articleRepository = new ArticleRepository()
 
         const body = await req.json<ArticleReqBody>()
@@ -49,7 +52,9 @@ export class RouteController {
         }
     }
 
-    async updateArticle(req: Request & { params: { id: string } }) {
+    async updateArticle(
+        req: Request & { params: { id: string } },
+    ): Promise<Response> {
         const idOfArticleToUpdate = req.params.id
         const dataToUpdate = await req.json<Omit<ArticleReqBody, 'url'>>()
 
@@ -62,10 +67,13 @@ export class RouteController {
         return okResponse(res)
     }
 
-    async createPresignPost(req: Request) {
+    async createPresignPost(req: Request): Promise<Response> {
         const s3 = new S3({
-            accessKeyId: S3_ACCESS_KEY_ID,
-            secretAccessKey: S3_SECRET_KEY,
+            credentials: {
+                accessKeyId: S3_ACCESS_KEY_ID,
+                secretAccessKey: S3_SECRET_KEY,
+            },
+            region: 'us-east-1',
         })
 
         const url = new URL(req.url)
@@ -73,8 +81,9 @@ export class RouteController {
             ? url.searchParams.get('fileId')
             : v4()
 
-        const res = s3.createPresignedPost({
+        const res = await createPresignedPost(s3, {
             Bucket: BUCKET_NAME,
+            Key: fileName,
             Fields: {
                 acl: 'public-read',
                 key: fileName,
@@ -84,7 +93,6 @@ export class RouteController {
                 ['content-length-range', 0, 10000000],
             ],
         })
-
         return okResponse(res)
     }
 }

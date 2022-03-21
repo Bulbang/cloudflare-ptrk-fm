@@ -9,10 +9,7 @@ export const okResponse = <TBody>(
         opt.statusText = opt.statusText || 'OK'
     }
 
-    return new Response(
-        body ? JSON.stringify(body) : 'ok',
-        opt,
-    )
+    return new Response(body ? JSON.stringify(body) : 'ok', opt)
 }
 
 export const errorResponse = (error: HttpError) => {

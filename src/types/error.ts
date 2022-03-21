@@ -1,5 +1,5 @@
 export type HttpError = {
-    status: number,
-    statusText: string,
+    status: number
+    statusText: string
     message: string
 }
