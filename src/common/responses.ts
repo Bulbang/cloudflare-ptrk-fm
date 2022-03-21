@@ -1,14 +1,17 @@
 import { HttpError } from '../types/error'
 
 export const okResponse = <TBody>(
-    body: TBody,
-    opt?: ResponseInit,
+    body: TBody
 ): Response => {
-    opt.status = opt.status || 200
-    opt.statusText = opt.statusText || 'OK'
-    opt.headers = { ...opt.headers, 'Access-Control-Allow-Origin': '*' }
+    
+    const options = {
+        status : 200,
+        statusText :'OK',
+        headers : { 'Access-Control-Allow-Origin': '*' }
+    }
+    
 
-    return new Response(body ? JSON.stringify(body) : 'ok', opt)
+    return new Response(body ? JSON.stringify(body) : 'ok', options)
 }
 
 export const errorResponse = (error: HttpError) => {

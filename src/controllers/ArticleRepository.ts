@@ -5,7 +5,6 @@ import { errorBuilder } from '../common/errors'
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 
 export class ArticleRepository {
-    ARTICLES: KVNamespace<string>
 
     private createArticleObj(obj: any): Article {
         const article: Article = {
