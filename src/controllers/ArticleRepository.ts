@@ -101,11 +101,6 @@ export class ArticleRepository {
         article['updated_at'] = +new Date()
 
         try {
-            await ARTICLES.delete(id)
-        } catch (error) {
-            throw errorBuilder(500, 'KV delete operation error')
-        }
-        try {
             await ARTICLES.put(article.id, JSON.stringify(article))
         } catch (error) {
             throw errorBuilder(500, 'KV put operation error')
