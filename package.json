@@ -7,7 +7,7 @@
         "format": "prettier --write  '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
         "lint": "eslint --max-warnings=0 src && prettier --check '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
         "dev": "miniflare --watch --debug -p 8080",
-        "build": "esbuild --bundle --sourcemap  --external:@tnode_modules/* --outdir=dist --format=esm --target=node14  ./src/index.ts"
+        "build": "esbuild --bundle --sourcemap --outdir=dist --format=esm --target=node14 ./src/index.ts"
     },
     "author": "Bohdan Tkachuk <b.tkachuk26@gmail.com>",
     "license": "ISC",
@@ -19,6 +19,7 @@
         ]
     },
     "devDependencies": {
+        "@cfworker/json-schema": "^1.12.2",
         "@cloudflare/workers-types": "^3.4.0",
         "@types/node": "^17.0.21",
         "@types/uuid": "^8.3.4",
@@ -38,8 +39,6 @@
         "@aws-sdk/client-s3": "^3.54.1",
         "@aws-sdk/s3-presigned-post": "^3.54.1",
         "@notionhq/client": "^1.0.4",
-        "cyrillic-to-translit-js": "^3.1.0",
-        "jsonschema": "^1.4.0",
         "notion-to-md": "^2.3.2"
     }
 }
