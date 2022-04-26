@@ -1,0 +1,31 @@
+name = "ptrk-fm-worker"
+type = "javascript"
+
+account_id = "82fc104df8a81e191c0f230d6d9a125f"
+workers_dev = true
+compatibility_date = "2022-03-11"
+
+kv_namespaces = [ 
+  { binding = "ARTICLES", id = "412e34b6ab874c28be03a775186d5b4e" }
+]
+
+[vars]
+AWS_REGION = "us-east-1"
+BUCKET_NAME = "blog-api-dev-image-bucket"
+
+### AWS_ACCESS_KEY_ID & AWS_SECRET_KEY | In AWS - Your profile -> Security credentials -> Access keys
+### LOGIN & PASSWORD | For admin panel
+### NOTION_INTEGRATION_TOKEN | In Notion Workspace - Settings & Members -> Integrations -> Develop your own integrations -> *Create or choose integration* -> Internal Integration Token
+###                                                  Come back to Notion Workspace -> Share -> Invite -> *Choose integration*
+
+# [secrets]
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_KEY
+# LOGIN
+# PASSWORD
+# NOTION_INTEGRATION_TOKEN
+
+[build]
+command = "npm run build"
+[build.upload]
+format = "service-worker"
