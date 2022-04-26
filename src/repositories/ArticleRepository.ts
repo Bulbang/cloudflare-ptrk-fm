@@ -1,10 +1,14 @@
 import CyrillicToTranslit = require('cyrillic-to-translit-js')
 import { v4 } from 'uuid'
 
-import { errorBuilder } from '../common/errors'
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
+import { notionToMarkdown } from '../utils/notionToMarkdown'
+import { errorBuilder } from '../utils/response/errors'
 
 export class ArticleRepository {
+
+    constructor() {
+    }
 
     private createArticleObj(obj: any): Article {
         const article: Article = {
@@ -14,6 +18,7 @@ export class ArticleRepository {
             meta_title: obj.meta_title,
             meta_description: obj.meta_description,
             content: obj.content,
+            markdown: obj.markdown,
             created_at: obj.created_at,
             updated_at: obj.updated_at,
             file_id: obj.file_id,
@@ -22,7 +27,7 @@ export class ArticleRepository {
         return article
     }
 
-    public async getMany(): Promise<TrimmedArticle[]> {
+    public getMany = async (): Promise<TrimmedArticle[]> => {
         let list: Article[]
         try {
             const { keys } = await ARTICLES.list()
@@ -49,7 +54,7 @@ export class ArticleRepository {
         return articles
     }
 
-    public async getById(id: string): Promise<Article> {
+    public getById = async (id: string): Promise<Article> => {
         let article: Article
         try {
             article = JSON.parse(await ARTICLES.get(id))
@@ -63,20 +68,26 @@ export class ArticleRepository {
         return formattedArticle
     }
 
-    public async putData(
+    public putData = async (
         article: ArticleReqBody & { url: string },
-    ): Promise<Article> {
+    ): Promise<Article> => {
+        const { notion_url } = article
+        const markdown = await notionToMarkdown(notion_url)
+
+        delete article.notion_url
+        const newArticle: Article = {
+            id: v4(),
+            slug: new CyrillicToTranslit().transform(
+                article.title.toLowerCase(),
+                '_',
+            ),
+            ...article,
+            markdown,
+            created_at: +new Date(),
+            updated_at: +new Date(),
+        }
+
         try {
-            const newArticle: Article = {
-                id: v4(),
-                slug: new CyrillicToTranslit().transform(
-                    article.title.toLowerCase(),
-                    '_',
-                ),
-                ...article,
-                created_at: +new Date(),
-                updated_at: +new Date(),
-            }
             await ARTICLES.put(newArticle.id, JSON.stringify(newArticle))
             return newArticle
         } catch (error) {
@@ -85,10 +96,10 @@ export class ArticleRepository {
         }
     }
 
-    public async updateData(
+    public updateData = async (
         id: string,
         updateValues: Partial<ArticleReqBody>,
-    ): Promise<Article> {
+    ): Promise<Article> => {
         let article: Article
         try {
             article = await this.getById(id)
@@ -96,8 +107,13 @@ export class ArticleRepository {
             throw error
         }
 
-        for (const [key, val] of Object.entries(updateValues))
+        for (const [key, val] of Object.entries(updateValues)) {
+            if (key === 'notion_url') {
+                article['markdown'] = await notionToMarkdown(val)
+                continue
+            }
             article[key] = val
+        }
         article['updated_at'] = +new Date()
 
         try {

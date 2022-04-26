@@ -19,6 +19,17 @@ export const articlesCreateSchema = {
         file_id: {
             type: 'string',
         },
+
+        notion_url: {
+            type: 'string',
+        },
     },
-    required: ['title', 'meta_title', 'meta_description', 'content', 'file_id'],
+    required: [
+        'title',
+        'meta_title',
+        'meta_description',
+        'content',
+        'file_id',
+        'notion_url',
+    ],
 }

@@ -1,4 +1,4 @@
-import { HttpError } from '../types/error'
+import { HttpError } from '../../types/error'
 
 const statusCodesMap: { [code: number]: string } = {
     400: 'Bad Request',

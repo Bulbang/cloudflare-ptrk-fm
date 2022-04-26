@@ -14,6 +14,9 @@ export const articleUpdateSchema = {
         content: {
             type: 'string',
         },
+        notion_url: {
+            type: 'string',
+        },
     },
     additionalProperties: false,
 }

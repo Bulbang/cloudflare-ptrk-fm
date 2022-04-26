@@ -1,6 +1,6 @@
 import { Schema, Validator } from 'jsonschema'
-import { errorBuilder } from '../common/errors'
-import { errorResponse } from '../common/responses'
+import { errorBuilder } from '../utils/response/errors'
+import { errorResponse } from '../utils/response/responses'
 
 const validator = new Validator()
 

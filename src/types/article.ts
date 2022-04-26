@@ -1,3 +1,4 @@
+
 export type Article = {
     id: string
     slug: string
@@ -9,12 +10,13 @@ export type Article = {
     updated_at: number
     file_id: string
     url: string
+    markdown: string
 }
 
 export type ArticleReqBody = Omit<
     Article,
-    'id' | 'slug' | 'created_at' | 'updated_at' | 'url'
->
+    'id' | 'slug' | 'created_at' | 'updated_at' | 'url' | 'body' | 'markdown'
+> & { notion_url: string }
 
 export type TrimmedArticle = Omit<
     Article,
@@ -24,4 +26,6 @@ export type TrimmedArticle = Omit<
     | 'created_at'
     | 'updated_at'
     | 'file_id'
+    | 'body'
+    | 'markdown'
 >

@@ -1,20 +1,16 @@
-import { HttpError } from '../types/error'
+import { HttpError } from '../../types/error'
 
-export const okResponse = <TBody>(
-    body: TBody
-): Response => {
-    
+export const okResponse = <TBody>(body?: TBody): Response => {
     const options = {
-        status : 200,
-        statusText :'OK',
-        headers : { 'Access-Control-Allow-Origin': '*' }
+        status: 200,
+        statusText: 'OK',
+        headers: { 'Access-Control-Allow-Origin': '*' },
     }
-    
 
     return new Response(body ? JSON.stringify(body) : 'ok', options)
 }
 
-export const errorResponse = (error: HttpError) => {
+export const errorResponse = (error: HttpError): Response => {
     const { message, status, statusText } = error
     return message && status && statusText
         ? new Response(message, {

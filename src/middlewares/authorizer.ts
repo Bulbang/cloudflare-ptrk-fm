@@ -1,5 +1,5 @@
-import { errorBuilder } from '../common/errors'
-import { errorResponse } from '../common/responses'
+import { errorBuilder } from '../utils/response/errors'
+import { errorResponse } from '../utils/response/responses'
 
 export const authorizer = (req: Request) => {
     const authToken = req.headers.get('Authorization')
