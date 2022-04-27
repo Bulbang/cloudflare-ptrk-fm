@@ -10,6 +10,7 @@ import { authorizer } from '../middlewares/authorizer'
 import { BodyValidator } from '../middlewares/validator'
 import { articlesCreateSchema } from '../types/schemas/articles-create'
 import { articleUpdateSchema } from '../types/schemas/articles-update'
+import { errorBuilder } from '../utils/response/errors'
 
 export class RouteController {
     constructor(
@@ -43,6 +44,7 @@ export class RouteController {
         )
 
         this._router.get('/getPresignUrl', authorizer, this.createPresignPost)
+        this._router.all('/*', ()=> errorResponse(errorBuilder(404, "Not found")))
     }
 
     getArticles = async (): Promise<Response> => {
