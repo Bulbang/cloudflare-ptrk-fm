@@ -1,12 +1,14 @@
-import { Schema, Validator } from '@cfworker/json-schema'
+import { ZodObject, ZodRawShape, ZodTypeAny } from 'zod'
 import { errorBuilder } from '../utils/response/errors'
 import { errorResponse } from '../utils/response/responses'
 
-export const BodyValidator = (schema: Schema) => {
-    const validator = new Validator(schema)
+export const BodyValidator = <TSchema extends ZodRawShape>(
+    schema: ZodObject<TSchema, 'strict', ZodTypeAny>,
+) => {
     return async (req: Request) => {
         const body = await req.clone().json()
-        if (!validator.validate(body).valid)
+        const parseResult = schema.safeParse(body)
+        if (!parseResult.success)
             return errorResponse(errorBuilder(400, 'Invalid body'))
     }
 }
