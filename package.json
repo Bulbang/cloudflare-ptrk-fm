@@ -7,7 +7,7 @@
         "format": "prettier --write  '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
         "lint": "eslint --max-warnings=0 src && prettier --check '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
         "dev": "miniflare --watch --debug -p 8080",
-        "build": "esbuild --bundle --sourcemap  --external:@tnode_modules/* --outdir=dist --format=esm --target=node14  ./src/index.ts"
+        "build": "esbuild --bundle --sourcemap --outdir=dist --format=esm --target=node14  ./src/index.ts"
     },
     "author": "Bohdan Tkachuk <b.tkachuk26@gmail.com>",
     "license": "ISC",
