@@ -1,4 +1,6 @@
-export const articleUpdateSchema = {
+import { Schema } from '@cfworker/json-schema'
+
+export const articleUpdateSchema: Schema = {
     $schema: 'http://json-schema.org/draft-04/schema#',
     type: 'object',
     properties: {

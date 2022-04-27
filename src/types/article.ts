@@ -1,4 +1,3 @@
-
 export type Article = {
     id: string
     slug: string

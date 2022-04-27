@@ -12,9 +12,10 @@ import { articlesCreateSchema } from '../types/schemas/articles-create'
 import { articleUpdateSchema } from '../types/schemas/articles-update'
 
 export class RouteController {
-    
-
-    constructor(private readonly _router: Router, private readonly _articleRepository: ArticleRepository) {
+    constructor(
+        private readonly _router: Router,
+        private readonly _articleRepository: ArticleRepository,
+    ) {
         this._initRoutes()
     }
 
@@ -88,7 +89,7 @@ export class RouteController {
         }
         try {
             const newArticle = await this._articleRepository.putData(article)
-            return okResponse( newArticle )
+            return okResponse(newArticle)
         } catch (error) {
             return errorResponse(error)
         }

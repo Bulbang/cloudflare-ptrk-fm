@@ -1,14 +1,12 @@
-import CyrillicToTranslit = require('cyrillic-to-translit-js')
 import { v4 } from 'uuid'
 
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 import { notionToMarkdown } from '../utils/notionToMarkdown'
 import { errorBuilder } from '../utils/response/errors'
+import { toTranslit } from '../utils/toTranslit'
 
 export class ArticleRepository {
-
-    constructor() {
-    }
+    constructor() {}
 
     private createArticleObj(obj: any): Article {
         const article: Article = {
@@ -77,10 +75,7 @@ export class ArticleRepository {
         delete article.notion_url
         const newArticle: Article = {
             id: v4(),
-            slug: new CyrillicToTranslit().transform(
-                article.title.toLowerCase(),
-                '_',
-            ),
+            slug: toTranslit(article.title),
             ...article,
             markdown,
             created_at: +new Date(),

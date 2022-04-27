@@ -1,9 +1,9 @@
 import { Router } from 'itty-router'
 
 import { RouteController } from './controllers/RouteController'
-import { ArticleRepository } from './repositories/ArticleRepository';
+import { ArticleRepository } from './repositories/ArticleRepository'
 
-const routeController =  new RouteController(Router(), new ArticleRepository())
+const routeController = new RouteController(Router(), new ArticleRepository())
 const router = routeController.getRouter
 
 addEventListener('fetch', (e) => {
