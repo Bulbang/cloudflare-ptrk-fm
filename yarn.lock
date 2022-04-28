@@ -919,11 +919,6 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@cfworker/json-schema@^1.12.2":
-  version "1.12.2"
-  resolved "https://registry.yarnpkg.com/@cfworker/json-schema/-/json-schema-1.12.2.tgz#a68a6fd0a2ad013460339d4e590474b94beb6baf"
-  integrity sha512-hh7qzfT0+1rkKiZrZnttRZxjZLzcHHZNQ7XmzA8De0YJxhg/tEovmczM1AjuGZJr8sr69gfOFtfZgqz2s1/p5Q==
-
 "@cloudflare/workers-types@^3.4.0":
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-3.7.1.tgz#d6fbc327f547bf0dc85aa103c6df691999a944b0"
@@ -2452,3 +2447,8 @@ youch@^2.2.2:
     cookie "^0.4.1"
     mustache "^4.2.0"
     stack-trace "0.0.10"
+
+zod@^3.14.4:
+  version "3.14.4"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.14.4.tgz#e678fe9e5469f4663165a5c35c8f3dc66334a5d6"
+  integrity sha512-U9BFLb2GO34Sfo9IUYp0w3wJLlmcyGoMd75qU9yf+DrdGA4kEx6e+l9KOkAlyUO0PSQzZCa3TR4qVlcmwqSDuw==

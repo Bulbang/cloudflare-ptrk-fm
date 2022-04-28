@@ -27,6 +27,6 @@ BUCKET_NAME = "ptrk"
 # NOTION_INTEGRATION_TOKEN
 
 [build]
-command = "yarn build"
+command = "yarn install --freeze-lockfile && yarn build"
 [build.upload]
 format = "service-worker"
