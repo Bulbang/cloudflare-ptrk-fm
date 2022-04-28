@@ -38,7 +38,7 @@ export const toTranslit = (word: string) => {
     let translit: string = ''
     for (const letter of word.toLocaleLowerCase())
         translit += translitMap[letter] ? translitMap[letter] : letter
-    return translit.split(/\s+/).join('_')
+    return translit.split(/\s+/).join('-')
 }
 
 export const isLatinWithoutWhitespace = (word: string) =>
