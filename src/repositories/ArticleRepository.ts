@@ -3,7 +3,7 @@ import { v4 } from 'uuid'
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 import { notionToMarkdown } from '../utils/notionToMarkdown'
 import { errorBuilder } from '../utils/response/errors'
-import { toTranslit } from '../utils/toTranslit'
+import { toTranslit } from '../utils/slugUtils'
 
 export class ArticleRepository {
     constructor() {}
@@ -15,12 +15,12 @@ export class ArticleRepository {
             title: obj.title,
             meta_title: obj.meta_title,
             meta_description: obj.meta_description,
-            content: obj.content,
             markdown: obj.markdown,
             created_at: obj.created_at,
             updated_at: obj.updated_at,
             file_id: obj.file_id,
             url: obj.url,
+            notion_url: obj.notion_url,
         }
         return article
     }
@@ -72,10 +72,8 @@ export class ArticleRepository {
         const { notion_url } = article
         const markdown = await notionToMarkdown(notion_url)
 
-        delete article.notion_url
         const newArticle: Article = {
             id: v4(),
-            slug: toTranslit(article.title),
             ...article,
             markdown,
             created_at: +new Date(),
@@ -103,10 +101,9 @@ export class ArticleRepository {
         }
 
         for (const [key, val] of Object.entries(updateValues)) {
-            if (key === 'notion_url') {
+            if (key === 'notion_url')
                 article['markdown'] = await notionToMarkdown(val)
-                continue
-            }
+
             article[key] = val
         }
         article['updated_at'] = +new Date()
@@ -118,5 +115,16 @@ export class ArticleRepository {
         }
 
         return article
+    }
+
+    public refreshMarkdown = async (id: string) => {
+        const article = await this.getById(id)
+        article.markdown = await notionToMarkdown(article.notion_url)
+        try {
+            await ARTICLES.put(article.id, JSON.stringify(article))
+            return article
+        } catch (error) {
+            throw errorBuilder(500, 'KV put operation error')
+        }
     }
 }

@@ -32,44 +32,14 @@ const translitMap = {
     э: 'e',
     ю: 'yu',
     я: 'ya',
-    А: 'A',
-    Б: 'B',
-    В: 'V',
-    Г: 'G',
-    Д: 'D',
-    Е: 'E',
-    Ё: 'Yo',
-    Ж: 'Zh',
-    З: 'Z',
-    И: 'I',
-    Й: 'J',
-    К: 'K',
-    Л: 'L',
-    М: 'M',
-    Н: 'N',
-    О: 'O',
-    П: 'P',
-    Р: 'R',
-    С: 'S',
-    Т: 'T',
-    У: 'U',
-    Ф: 'F',
-    Х: 'H',
-    Ц: 'C',
-    Ч: 'Ch',
-    Ш: 'Sh',
-    Щ: 'Sch',
-    Ъ: 'J',
-    Ы: 'I',
-    Ь: 'J',
-    Э: 'E',
-    Ю: 'Yu',
-    Я: 'Ya',
 }
 
 export const toTranslit = (word: string) => {
     let translit: string = ''
-    for (const letter of word)
+    for (const letter of word.toLocaleLowerCase())
         translit += translitMap[letter] ? translitMap[letter] : letter
-    return translit
+    return translit.split(/\s+/).join('-')
 }
+
+export const isLatinWithoutWhitespace = (word: string) =>
+    word.split(/[^a-z]|\s+/g).length !== 1 ? false : true
