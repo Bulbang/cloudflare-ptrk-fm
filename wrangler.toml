@@ -1,25 +1,23 @@
 name = "ptrk-fm-worker"
 type = "javascript"
 
-### Workers -> AccountID
-account_id = "" 
-
+account_id = "32ec5a45e61bb65267a5e522f2d1425d"
 workers_dev = true
 compatibility_date = "2022-03-11"
 
-### Workers -> KV -> Choose ID from namespaces table or create another namespace
+# this should be created manually in cloudflare..
+# workers -> worker -> settings -> KV namespace bindings
 kv_namespaces = [ 
-  { binding = "ARTICLES", id = "" } 
+  { binding = "ARTICLES", id = "d28de518cd11446db0829b715df74299" }
 ]
 
 [vars]
-AWS_REGION = "us-east-1"
-BUCKET_NAME = "blog-api-dev-image-bucket"
+AWS_REGION = "eu-central-1"
+BUCKET_NAME = "ptrk"
 
-### AWS_ACCESS_KEY_ID & AWS_SECRET_KEY | In AWS - Your profile -> Security credentials -> Access keys
-### LOGIN & PASSWORD                   | For admin panel
-### NOTION_INTEGRATION_TOKEN           | In Notion Workspace - Settings & Members -> Integrations -> Develop your own integrations -> *Create or choose integration* -> Internal Integration Token
-###                                    | Come back to Notion Workspace -> Share -> Invite -> *Choose integration*
+## AWS KEY ID AND KEY | AWS - ACC - SECURITY Credentials - Access Key
+## LOGIN AND PASSWORD for admin panel
+# notion - settings and members - integrations - develop your own...
 
 # [secrets]
 # AWS_ACCESS_KEY_ID
@@ -29,6 +27,6 @@ BUCKET_NAME = "blog-api-dev-image-bucket"
 # NOTION_INTEGRATION_TOKEN
 
 [build]
-command = "npm run build"
+command = "yarn install --freeze-lockfile && yarn build"
 [build.upload]
 format = "service-worker"
