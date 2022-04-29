@@ -3,7 +3,6 @@ import { v4 } from 'uuid'
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 import { notionToMarkdown } from '../utils/notionToMarkdown'
 import { errorBuilder } from '../utils/response/errors'
-import { toTranslit } from '../utils/slugUtils'
 
 export class ArticleRepository {
     constructor() {}
@@ -69,13 +68,9 @@ export class ArticleRepository {
     public putData = async (
         article: ArticleReqBody & { url: string },
     ): Promise<Article> => {
-        const { notion_url } = article
-        const markdown = await notionToMarkdown(notion_url)
-
         const newArticle: Article = {
             id: v4(),
             ...article,
-            markdown,
             created_at: +new Date(),
             updated_at: +new Date(),
         }

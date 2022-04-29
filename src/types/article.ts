@@ -14,7 +14,7 @@ export type Article = {
 
 export type ArticleReqBody = Omit<
     Article,
-    'id' | 'created_at' | 'updated_at' | 'url' | 'body' | 'markdown'
+    'id' | 'created_at' | 'updated_at' | 'url' | 'body'
 >
 
 export type TrimmedArticle = Omit<

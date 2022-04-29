@@ -1,10 +1,15 @@
 import { HttpError } from '../../types/error'
 
+const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    Vary: 'Origin',
+}
+
 export const okResponse = <TBody>(body?: TBody): Response => {
     const options = {
         status: 200,
         statusText: 'OK',
-        headers: { 'Access-Control-Allow-Origin': '*' },
+        headers: corsHeaders,
     }
 
     return new Response(body ? JSON.stringify(body) : 'ok', options)
@@ -16,11 +21,11 @@ export const errorResponse = (error: HttpError): Response => {
         ? new Response(message, {
               status,
               statusText,
-              headers: { 'Access-Control-Allow-Origin': '*' },
+              headers: corsHeaders,
           })
         : new Response('Internal server error', {
               status: 500,
               statusText: 'Internal',
-              headers: { 'Access-Control-Allow-Origin': '*' },
+              headers: corsHeaders,
           })
 }

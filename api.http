@@ -33,13 +33,15 @@ Authorization: Basic <encodedString>
 Content-Type: application/json
 # "notion_url" is notion article url
 # "slug" should be lowercase latin word without
+# "markdown" you can get from GET /notion-markdown
 {
     "title": "asdfdfd",
     "meta_title": "qwevhgfxrty212458",
     "meta_description": "metacsdvaqweqwrty322222",
     "slug": "contentqweadfhsfbvsdfdnty311121",
     "notion_url": "url",
-    "file_id": "d9bdbf96-b972-4692-a160-4c0fa9158a3c"
+    "file_id": "d9bdbf96-b972-4692-a160-4c0fa9158a3c",
+    "markdown": "dsaasdasdasdasd"
 }
 
 
@@ -85,8 +87,11 @@ GET /getPresignUrl
 ### For slug generation
 # Query param "title" required
 # encodedString = base64(login:password)
-
 GET /transliterate
 Authorization: Basic <encodedString>
 
-
+### Return notion md
+# Query param "notion_url" required
+# encodedString = base64(login:password)
+GET /notion-markdown
+Authorization: Basic <encodedString>

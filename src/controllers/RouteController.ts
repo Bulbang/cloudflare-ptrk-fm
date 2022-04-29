@@ -12,6 +12,7 @@ import { articleCreateSchema } from '../types/schemas/articles-create'
 import { articleUpdateSchema } from '../types/schemas/articles-update'
 import { errorBuilder } from '../utils/response/errors'
 import { isLatinWithoutWhitespace, toTranslit } from '../utils/slugUtils'
+import { notionToMarkdown } from '../utils/notionToMarkdown'
 
 export class RouteController {
     constructor(
@@ -45,8 +46,14 @@ export class RouteController {
             BodyValidator(articleUpdateSchema),
             this._updateArticle,
         )
+        this._router.get(
+            '/notion-markdown',
+            authorizer,
+            this._getNotionMarkdown,
+        )
         this._router.get('/transliterate', authorizer, this._generateSlug)
         this._router.get('/getPresignUrl', authorizer, this._createPresignPost)
+        this._router.options('/*', this._cors)
         this._router.all('/*', () =>
             errorResponse(errorBuilder(404, 'Not found')),
         )
@@ -82,6 +89,7 @@ export class RouteController {
             file_id,
             notion_url,
             slug,
+            markdown,
         } = body
 
         if (!isLatinWithoutWhitespace(slug.toLowerCase()))
@@ -96,6 +104,7 @@ export class RouteController {
             file_id,
             notion_url,
             slug: slug.toLowerCase(),
+            markdown,
         }
         try {
             const newArticle = await this._articleRepository.putData(article)
@@ -149,7 +158,7 @@ export class RouteController {
         })
         return okResponse(res)
     }
-    private _generateSlug = async (req: Request) => {
+    private _generateSlug = async (req: Request): Promise<Response> => {
         const url = new URL(req.url)
         const title = url.searchParams.has('title')
             ? url.searchParams.get('title')
@@ -161,9 +170,26 @@ export class RouteController {
         const slug = toTranslit(title)
         return okResponse(slug)
     }
+    private _getNotionMarkdown = async (req: Request): Promise<Response> => {
+        const url = new URL(req.url)
+        const notion_url = url.searchParams.has('notion_url')
+            ? url.searchParams.get('notion_url')
+            : undefined
+        if (!notion_url) {
+            return errorResponse(
+                errorBuilder(
+                    400,
+                    '"notion_url" query string parameter is empty',
+                ),
+            )
+        }
+        const markdown = await notionToMarkdown(notion_url)
+
+        return okResponse(markdown)
+    }
     private _refreshNotionMarkdown = async (
         req: Request & { params: { id: string } },
-    ) => {
+    ): Promise<Response> => {
         const { id } = req.params
         try {
             const refreshedArticle =
@@ -173,7 +199,31 @@ export class RouteController {
             return errorResponse(error)
         }
     }
+    private _cors = async (req: Request): Promise<Response> => {
+        let headers = req.headers
+        if (
+            headers.get('Origin') !== null &&
+            headers.get('Access-Control-Request-Method') !== null &&
+            headers.get('Access-Control-Request-Headers') !== null
+        ) {
+            let respHeaders = {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,OPTIONS',
+                'Access-Control-Max-Age': '86400',
+                'Access-Control-Allow-Headers': req.headers.get(
+                    'Access-Control-Request-Headers',
+                ),
+            }
+
+            return new Response(null, {
+                headers: respHeaders,
+            })
+        } else {
+            return new Response(null, {
+                headers: {
+                    Allow: 'GET, PUT, POST, OPTIONS',
+                },
+            })
+        }
+    }
 }
-// refresh endpoint
-// minus content
-// generate slug
