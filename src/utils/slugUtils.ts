@@ -42,4 +42,4 @@ export const toTranslit = (word: string) => {
 }
 
 export const isLatinWithoutWhitespace = (word: string) =>
-    word.split(/[^a-z]|\s+/g).length !== 1 ? false : true
+    word.split(/[^a-z-]|\s+/g).length !== 1 ? false : true
