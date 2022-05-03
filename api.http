@@ -15,7 +15,13 @@ GET /articles
 #   title: string,
 #   meta_title: string, 
 #   meta_description: string, 
-#   markdown: string, 
+#   notion_blocks: { 
+#     props: { 
+#       blockMap: { 
+#           [key:string]: NotionBlock 
+#       } 
+#     } 
+#   }, 
 #   created_at: number, 
 #   updated_at: number,
 #   file_id: string,
@@ -33,7 +39,7 @@ Authorization: Basic <encodedString>
 Content-Type: application/json
 # "notion_url" is notion article url
 # "slug" should be lowercase latin word without
-# "markdown" you can get from GET /notion-markdown
+# "notion_blocks" you can get from GET /notion-blocks
 {
     "title": "asdfdfd",
     "meta_title": "qwevhgfxrty212458",
@@ -41,7 +47,7 @@ Content-Type: application/json
     "slug": "contentqweadfhsfbvsdfdnty311121",
     "notion_url": "url",
     "file_id": "d9bdbf96-b972-4692-a160-4c0fa9158a3c",
-    "markdown": "dsaasdasdasdasd"
+    "notion_blocks": "dsaasdasdasdasd"
 }
 
 
@@ -60,7 +66,7 @@ Content-Type: application/json
     "notion_url": "contentqweadsfbdnty321"
 }
 
-### Refresh notion markdown by notion_url attached to the :id
+### Refresh notion blocks by notion_url attached to the :id
 # encodedString = base64(login:password)
 POST /articles/refresh/:id
 Authorization: Basic <encodedString>
@@ -93,5 +99,5 @@ Authorization: Basic <encodedString>
 ### Return notion md
 # Query param "notion_url" required
 # encodedString = base64(login:password)
-GET /notion-markdown
+GET /notion-blocks
 Authorization: Basic <encodedString>

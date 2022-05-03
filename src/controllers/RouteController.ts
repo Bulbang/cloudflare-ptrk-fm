@@ -12,7 +12,7 @@ import { articleCreateSchema } from '../types/schemas/articles-create'
 import { articleUpdateSchema } from '../types/schemas/articles-update'
 import { errorBuilder } from '../utils/response/errors'
 import { isLatinWithoutWhitespace, toTranslit } from '../utils/slugUtils'
-import { notionToMarkdown } from '../utils/notionToMarkdown'
+import { getNotionBlocks } from '../utils/getNotionBlocks'
 
 export class RouteController {
     constructor(
@@ -38,7 +38,7 @@ export class RouteController {
         this._router.post(
             '/articles/refresh/:id',
             authorizer,
-            this._refreshNotionMarkdown,
+            this._refreshNotionNotionBlocks,
         )
         this._router.put(
             '/articles/:id',
@@ -47,9 +47,9 @@ export class RouteController {
             this._updateArticle,
         )
         this._router.get(
-            '/notion-markdown',
+            '/notion-blocks',
             authorizer,
-            this._getNotionMarkdown,
+            this._getNotionBlocks,
         )
         this._router.get('/transliterate', authorizer, this._generateSlug)
         this._router.get('/getPresignUrl', authorizer, this._createPresignPost)
@@ -89,7 +89,7 @@ export class RouteController {
             file_id,
             notion_url,
             slug,
-            markdown,
+            notion_blocks,
         } = body
 
         if (!isLatinWithoutWhitespace(slug.toLowerCase()))
@@ -104,7 +104,7 @@ export class RouteController {
             file_id,
             notion_url,
             slug: slug.toLowerCase(),
-            markdown,
+            notion_blocks,
         }
         try {
             const newArticle = await this._articleRepository.putData(article)
@@ -170,7 +170,7 @@ export class RouteController {
         const slug = toTranslit(title)
         return okResponse(slug)
     }
-    private _getNotionMarkdown = async (req: Request): Promise<Response> => {
+    private _getNotionBlocks = async (req: Request): Promise<Response> => {
         const url = new URL(req.url)
         const notion_url = url.searchParams.has('notion_url')
             ? url.searchParams.get('notion_url')
@@ -183,17 +183,17 @@ export class RouteController {
                 ),
             )
         }
-        const markdown = await notionToMarkdown(notion_url)
+        const notion_blocks = await getNotionBlocks(notion_url)
 
-        return okResponse(markdown)
+        return okResponse(notion_blocks)
     }
-    private _refreshNotionMarkdown = async (
+    private _refreshNotionNotionBlocks = async (
         req: Request & { params: { id: string } },
     ): Promise<Response> => {
         const { id } = req.params
         try {
             const refreshedArticle =
-                await this._articleRepository.refreshMarkdown(id)
+                await this._articleRepository.refreshNotionBlocks(id)
             return okResponse(refreshedArticle)
         } catch (error) {
             return errorResponse(error)

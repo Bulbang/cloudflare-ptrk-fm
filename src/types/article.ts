@@ -8,7 +8,11 @@ export type Article = {
     updated_at: number
     file_id: string
     url: string
-    markdown: string
+    notion_blocks: {
+        props: {
+            blockMap: unknown
+        }
+    }
     notion_url: string
 }
 
@@ -25,6 +29,6 @@ export type TrimmedArticle = Omit<
     | 'updated_at'
     | 'file_id'
     | 'body'
-    | 'markdown'
+    | 'notion_blocks'
     | 'notion_url'
 >
