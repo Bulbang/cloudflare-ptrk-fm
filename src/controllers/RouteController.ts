@@ -12,7 +12,7 @@ import { articleCreateSchema } from '../types/schemas/articles-create'
 import { articleUpdateSchema } from '../types/schemas/articles-update'
 import { errorBuilder } from '../utils/response/errors'
 import { isLatinWithoutWhitespace, toTranslit } from '../utils/slugUtils'
-import { getNotionBlocks } from '../utils/getNotionBlocks'
+import { getNotionBlocks } from '../utils/notion-utils'
 
 export class RouteController {
     constructor(
@@ -46,11 +46,7 @@ export class RouteController {
             BodyValidator(articleUpdateSchema),
             this._updateArticle,
         )
-        this._router.get(
-            '/notion-blocks',
-            authorizer,
-            this._getNotionBlocks,
-        )
+        this._router.get('/notion-blocks', authorizer, this._getNotionBlocks)
         this._router.get('/transliterate', authorizer, this._generateSlug)
         this._router.get('/getPresignUrl', authorizer, this._createPresignPost)
         this._router.options('/*', this._cors)

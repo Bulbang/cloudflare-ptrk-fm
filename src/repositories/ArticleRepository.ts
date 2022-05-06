@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
-import { getNotionBlocks } from '../utils/getNotionBlocks'
+import { getNotionBlocks } from '../utils/notion-utils'
 import { errorBuilder } from '../utils/response/errors'
 
 export class ArticleRepository {
@@ -116,9 +116,11 @@ export class ArticleRepository {
         const article = await this.getById(id)
         article.notion_blocks = await getNotionBlocks(article.notion_url)
         try {
+            console.log(article);
             await ARTICLES.put(article.id, JSON.stringify(article))
             return article
         } catch (error) {
+            console.log(error);
             throw errorBuilder(500, 'KV put operation error')
         }
     }
