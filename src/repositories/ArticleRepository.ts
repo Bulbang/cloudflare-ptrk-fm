@@ -24,7 +24,7 @@ export class ArticleRepository {
         return article
     }
 
-    public getMany = async (): Promise<TrimmedArticle[]> => {
+    public getMany = async (options?: {sortByDate: string}): Promise<TrimmedArticle[]> => {
         let list: Article[]
         try {
             const { keys } = await ARTICLES.list()
@@ -40,14 +40,22 @@ export class ArticleRepository {
         if (!list) throw errorBuilder(404, 'Items not found')
 
         const articles: TrimmedArticle[] = list.map((item: Article) => {
-            const { id, slug, title, url } = item
+            const { id, slug, title, url, created_at } = item
             return {
                 id,
                 slug,
                 title,
+                created_at,
                 url,
             }
         })
+
+        if (options.sortByDate == "descending") {
+            articles.sort((a,b)=> b.created_at - a.created_at)
+        } else if (options.sortByDate == "ascending") {
+            articles.sort((a,b)=> a.created_at - b.created_at)
+        }
+
         return articles
     }
 

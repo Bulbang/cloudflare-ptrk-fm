@@ -55,9 +55,12 @@ export class RouteController {
         )
     }
 
-    private _getArticles = async (): Promise<Response> => {
+    private _getArticles = async (req: Request): Promise<Response> => {
         try {
-            const articles = await this._articleRepository.getMany()
+            const url = new URL(req.url)
+            const articles = await this._articleRepository.getMany({
+                sortByDate: url.searchParams.get('sortByDate'),
+            })
             return okResponse<TrimmedArticle[]>(articles)
         } catch (error) {
             return errorResponse(error)

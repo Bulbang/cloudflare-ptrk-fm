@@ -25,7 +25,6 @@ export type TrimmedArticle = Omit<
     Article,
     | 'meta_title'
     | 'meta_description'
-    | 'created_at'
     | 'updated_at'
     | 'file_id'
     | 'body'
