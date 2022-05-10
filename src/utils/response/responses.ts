@@ -5,7 +5,10 @@ const corsHeaders = {
     Vary: 'Origin',
 }
 
-export const okResponse = <TBody>(body?: TBody): Response => {
+export const okResponse = <TBody>(
+    body?: TBody,
+    headers?: { [key: string]: string },
+): Response => {
     const options = {
         status: 200,
         statusText: 'OK',

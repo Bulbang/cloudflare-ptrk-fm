@@ -10,15 +10,13 @@ compatibility_date = "2022-03-11"
 # this should be created manually in cloudflare..
 # workers -> worker -> settings -> KV namespace bindings
 kv_namespaces = [ 
-  { binding = "ARTICLES", id = "d28de518cd11446db0829b715df74299" } 
+  { binding = "ARTICLES", id = "5d92f3a61bc74405a943c16bfad932e4" } 
 ]
 
-### You should set CORS policy for bucket: Bucket -> Permisions -> Cross-origin resource sharing (CORS) -> Edit -> Paste
+### You should set CORS policy for bucket: Bucket -> Permisions -> Cross-origin resource sharing (CORS) -> Edit -> Paste  
 # [
 #     {
-#         "AllowedHeaders": [
-#           "*"
-#           ],
+#         "AllowedHeaders": [],
 #         "AllowedMethods": [
 #             "GET",
 #             "POST",

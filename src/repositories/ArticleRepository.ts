@@ -24,7 +24,9 @@ export class ArticleRepository {
         return article
     }
 
-    public getMany = async (options?: {sortByDate: string}): Promise<TrimmedArticle[]> => {
+    public getMany = async (options?: {
+        sortByDate: string
+    }): Promise<TrimmedArticle[]> => {
         let list: Article[]
         try {
             const { keys } = await ARTICLES.list()
@@ -50,10 +52,10 @@ export class ArticleRepository {
             }
         })
 
-        if (options.sortByDate == "descending") {
-            articles.sort((a,b)=> b.created_at - a.created_at)
-        } else if (options.sortByDate == "ascending") {
-            articles.sort((a,b)=> a.created_at - b.created_at)
+        if (options.sortByDate == 'descending') {
+            articles.sort((a, b) => b.created_at - a.created_at)
+        } else if (options.sortByDate == 'ascending') {
+            articles.sort((a, b) => a.created_at - b.created_at)
         }
 
         return articles
@@ -120,15 +122,15 @@ export class ArticleRepository {
         return article
     }
 
-    public refreshNotionBlocks= async (id: string) => {
+    public refreshNotionBlocks = async (id: string) => {
         const article = await this.getById(id)
         article.notion_blocks = await getNotionBlocks(article.notion_url)
         try {
-            console.log(article);
+            console.log(article)
             await ARTICLES.put(article.id, JSON.stringify(article))
             return article
         } catch (error) {
-            console.log(error);
+            console.log(error)
             throw errorBuilder(500, 'KV put operation error')
         }
     }

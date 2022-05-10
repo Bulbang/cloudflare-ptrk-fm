@@ -182,9 +182,12 @@ export class RouteController {
                 ),
             )
         }
-        const notion_blocks = await getNotionBlocks(notion_url)
-
-        return okResponse(notion_blocks)
+        try {
+            const notion_blocks = await getNotionBlocks(notion_url)
+            return okResponse(notion_blocks)
+        } catch (error) {
+            return errorResponse(error)
+        }
     }
     private _refreshNotionNotionBlocks = async (
         req: Request & { params: { id: string } },
@@ -200,18 +203,13 @@ export class RouteController {
     }
     private _cors = async (req: Request): Promise<Response> => {
         let headers = req.headers
-        if (
-            headers.get('Origin') !== null &&
-            headers.get('Access-Control-Request-Method') !== null &&
-            headers.get('Access-Control-Request-Headers') !== null
-        ) {
+        if (headers.get('Origin') !== null) {
             let respHeaders = {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,OPTIONS',
                 'Access-Control-Max-Age': '86400',
-                'Access-Control-Allow-Headers': req.headers.get(
-                    'Access-Control-Request-Headers',
-                ),
+                Vary: 'Origin',
+                'Access-Control-Allow-Headers': '*',
             }
 
             return new Response(null, {
