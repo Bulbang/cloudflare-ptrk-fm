@@ -35,9 +35,8 @@ GET /articles/:id
 
 ### Post new article
 ### All properties in request body required
-# encodedString = base64(login:password)
+
 POST /articles/create
-Authorization: Basic <encodedString>
 >>>>>>> dev
 Content-Type: application/json
 # "notion_url" is notion article url
@@ -56,10 +55,9 @@ Content-Type: application/json
 
 ### Change article by id
 # Properties in body is optional, but at least one required
-# encodedString = base64(login:password)
+
 PUT /articles/:id
 >>>>>>> dev
-Authorization: Basic <encodedString>
 Content-Type: application/json
 
 {
@@ -70,9 +68,8 @@ Content-Type: application/json
 }
 
 ### Refresh notion blocks by notion_url attached to the :id
-# encodedString = base64(login:password)
+
 POST /articles/refresh/:id
-Authorization: Basic <encodedString>
 
 
 ### Get pre-sign url for upload images with fields
@@ -95,12 +92,10 @@ GET /getPresignUrl
 
 ### For slug generation
 # Query param "title" required
-# encodedString = base64(login:password)
+
 GET /transliterate
-Authorization: Basic <encodedString>
 
 ### Return notion md
 # Query param "notion_url" required
-# encodedString = base64(login:password)
+
 GET /notion-blocks
-Authorization: Basic <encodedString>

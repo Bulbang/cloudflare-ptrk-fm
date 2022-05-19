@@ -6,7 +6,6 @@ import { errorResponse, okResponse } from '../utils/response/responses'
 import { Article, ArticleReqBody, TrimmedArticle } from '../types/article'
 import { ArticleRepository } from '../repositories/ArticleRepository'
 import { Router } from 'itty-router'
-import { authorizer } from '../middlewares/authorizer'
 import { BodyValidator } from '../middlewares/validator'
 import { articleCreateSchema } from '../types/schemas/articles-create'
 import { articleUpdateSchema } from '../types/schemas/articles-update'
@@ -31,24 +30,21 @@ export class RouteController {
         this._router.get('/articles/:id', this._getArticle)
         this._router.post(
             '/articles/create',
-            authorizer,
             BodyValidator(articleCreateSchema),
             this._putArticle,
         )
         this._router.post(
             '/articles/refresh/:id',
-            authorizer,
             this._refreshNotionNotionBlocks,
         )
         this._router.put(
             '/articles/:id',
-            authorizer,
             BodyValidator(articleUpdateSchema),
             this._updateArticle,
         )
-        this._router.get('/notion-blocks', authorizer, this._getNotionBlocks)
-        this._router.get('/transliterate', authorizer, this._generateSlug)
-        this._router.get('/getPresignUrl', authorizer, this._createPresignPost)
+        this._router.get('/notion-blocks', this._getNotionBlocks)
+        this._router.get('/transliterate', this._generateSlug)
+        this._router.get('/getPresignUrl', this._createPresignPost)
         this._router.options('/*', this._cors)
         this._router.all('/*', () =>
             errorResponse(errorBuilder(404, 'Not found')),
