@@ -1,0 +1,24 @@
+# For protecting some routes you should create manualy in Cloudflare DNS custom domain for worker or website
+# If you created a custom domain just a few minutes ago, you should wait some time before Cloudflare DNS will configures your domain
+name = "ptrkfm-auth"
+type = "javascript"
+account_id = "32ec5a45e61bb65267a5e522f2d1425d"
+workers_dev = true
+compatibility_date = "2022-05-10"
+# Routes that you need to protect
+# Route = <basic domain that you created in DNS>/<custom path>
+routes = [
+    "admin.ptrk.fm/*"
+]
+
+### Login and password you should set manually in cloudflare
+
+# [secrets]
+# LOGIN
+# PASSWORD
+
+[build]
+command = "yarn install --freeze-lockfile && yarn build"
+[build.upload]
+format = "service-worker"
+

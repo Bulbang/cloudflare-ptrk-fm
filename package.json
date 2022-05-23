@@ -7,7 +7,8 @@
         "format": "prettier --write  '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
         "lint": "eslint --max-warnings=0 src && prettier --check '*.{json,js}' 'src/**/*.{js,ts}' 'test/**/*.{js,ts}'",
         "dev": "miniflare --watch --debug -p 8080",
-        "build": "esbuild --bundle --sourcemap --outdir=dist --format=esm --target=node14 ./src/index.ts"
+        "build": "esbuild --bundle --sourcemap --outdir=dist --format=esm --target=node14 ./src/index.ts",
+        "deploy": "wrangler publish && ( cd ./src/auth-worker && wrangler publish )"
     },
     "author": "Bohdan Tkachuk <b.tkachuk26@gmail.com>",
     "license": "ISC",
@@ -35,8 +36,6 @@
         "uuid": "^8.3.2"
     },
     "dependencies": {
-        "@aws-sdk/client-s3": "^3.54.1",
-        "@aws-sdk/s3-presigned-post": "^3.54.1",
         "zod": "^3.14.4"
     }
 }

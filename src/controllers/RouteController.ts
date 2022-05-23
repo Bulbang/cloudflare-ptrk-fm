@@ -1,5 +1,3 @@
-import { S3 } from '@aws-sdk/client-s3'
-import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
 import { v4 } from 'uuid'
 
 import { errorResponse, okResponse } from '../utils/response/responses'
@@ -26,6 +24,8 @@ export class RouteController {
     }
 
     private _initRoutes = () => {
+        this._router.get('/img/:id', this._getImg)
+        this._router.post('/img', this._uploadImg)
         this._router.get('/articles', this._getArticles)
         this._router.get('/articles/:id', this._getArticle)
         this._router.post(
@@ -44,11 +44,52 @@ export class RouteController {
         )
         this._router.get('/notion-blocks', this._getNotionBlocks)
         this._router.get('/transliterate', this._generateSlug)
-        this._router.get('/getPresignUrl', this._createPresignPost)
         this._router.options('/*', this._cors)
         this._router.all('/*', () =>
             errorResponse(errorBuilder(404, 'Not found')),
         )
+    }
+
+    private _getImg = async (req: Request & { params: { id: string } }) => {
+        const { id } = req.params
+        try {
+            const img = await BUCKET.get(id)
+            if (!img) {
+                return errorResponse(
+                    errorBuilder(404, `Image by id ${id} not found`),
+                )
+            }
+            return new Response(await img.blob())
+        } catch (error) {
+            console.log(error)
+            return errorResponse(errorBuilder(500, 'Getting image error'))
+        }
+    }
+
+    private _uploadImg = async (req: Request) => {
+        const contentType = req.headers.has('content-type')
+            ? req.headers.get('content-type')
+            : undefined
+        const url = new URL(req.url)
+        const fileId = url.searchParams.has('fileId')
+            ? url.searchParams.get('fileId')
+            : v4()
+
+        if (!contentType) {
+            return errorResponse(
+                errorBuilder(400, 'content-type header is required'),
+            )
+        }
+
+        try {
+            await BUCKET.put(fileId, req.body, {
+                httpMetadata: { contentType },
+            })
+            return okResponse({ fileId })
+        } catch (error) {
+            console.log(error)
+            return errorResponse(errorBuilder(500, 'Putting image error'))
+        }
     }
 
     private _getArticles = async (req: Request): Promise<Response> => {
@@ -90,12 +131,10 @@ export class RouteController {
         if (!isLatinWithoutWhitespace(slug.toLowerCase()))
             return errorResponse(errorBuilder(400, 'Invalid slug'))
 
-        const url = `https://${BUCKET_NAME}.s3.amazonaws.com/${file_id}`
         const article = {
             title,
             meta_title,
             meta_description,
-            url,
             file_id,
             notion_url,
             slug: slug.toLowerCase(),
@@ -114,7 +153,7 @@ export class RouteController {
     ): Promise<Response> => {
         try {
             const idOfArticleToUpdate = req.params.id
-            const dataToUpdate = await req.json<Omit<ArticleReqBody, 'url'>>()
+            const dataToUpdate = await req.json<ArticleReqBody>()
             const res = await this._articleRepository.updateData(
                 idOfArticleToUpdate,
                 dataToUpdate,
@@ -125,34 +164,6 @@ export class RouteController {
         }
     }
 
-    private _createPresignPost = async (req: Request): Promise<Response> => {
-        const s3 = new S3({
-            credentials: {
-                accessKeyId: AWS_ACCESS_KEY_ID,
-                secretAccessKey: AWS_SECRET_KEY,
-            },
-            region: AWS_REGION,
-        })
-
-        const url = new URL(req.url)
-        const fileName = url.searchParams.has('fileId')
-            ? url.searchParams.get('fileId')
-            : v4()
-
-        const res = await createPresignedPost(s3, {
-            Bucket: BUCKET_NAME,
-            Key: fileName,
-            Fields: {
-                acl: 'public-read',
-                key: fileName,
-            },
-            Conditions: [
-                ['starts-with', '$Content-Type', 'image/'],
-                ['content-length-range', 0, 10000000],
-            ],
-        })
-        return okResponse(res)
-    }
     private _generateSlug = async (req: Request): Promise<Response> => {
         const url = new URL(req.url)
         const title = url.searchParams.has('title')

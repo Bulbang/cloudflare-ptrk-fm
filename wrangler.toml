@@ -13,32 +13,11 @@ kv_namespaces = [
   { binding = "ARTICLES", id = "5d92f3a61bc74405a943c16bfad932e4" } 
 ]
 
-### You should set CORS policy for bucket: Bucket -> Permisions -> Cross-origin resource sharing (CORS) -> Edit -> Paste  
-# [
-#     {
-#         "AllowedHeaders": [],
-#         "AllowedMethods": [
-#             "GET",
-#             "POST",
-#             "PUT"
-#         ],
-#         "AllowedOrigins": [
-#             "*"
-#         ],
-#         "ExposeHeaders": []
-#     }
-# ]
-
-[vars]
-AWS_REGION = "eu-central-1"
-BUCKET_NAME = "ptrk"
-
-## AWS KEY ID AND KEY | AWS - ACC - SECURITY Credentials - Access Key
-## LOGIN AND PASSWORD for admin panel
-
-# [secrets]
-# AWS_ACCESS_KEY_ID
-# AWS_SECRET_KEY
+# This should be created manually in cloudflare..
+# R2 -> Create bucket
+[[r2_buckets]]
+binding = 'BUCKET'
+bucket_name = 'ptrk'
 
 [build]
 command = "yarn install --freeze-lockfile && yarn build"

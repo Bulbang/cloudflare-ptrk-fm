@@ -1,5 +1,6 @@
+**/yarn-error.log
 dist
-node_modules
+**/node_modules
 transpiled
 /.idea/
 worker

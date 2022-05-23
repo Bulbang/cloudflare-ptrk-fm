@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "name": "auth",
+  "version": "1.0.0",
+  "description": "A template for kick starting a Cloudflare Workers project",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild --bundle --sourcemap --outdir=dist --format=esm --target=node14 ./index.ts",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Bohdan Tkachuk <b.tkachuk26@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^3.9.0",
+    "esbuild": "^0.14.26",
+    "itty-router": "^2.6.1",
+    "prettier": "^1.18.2",
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {}
+}

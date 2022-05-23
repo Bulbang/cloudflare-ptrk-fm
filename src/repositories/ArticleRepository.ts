@@ -18,7 +18,6 @@ export class ArticleRepository {
             created_at: obj.created_at,
             updated_at: obj.updated_at,
             file_id: obj.file_id,
-            url: obj.url,
             notion_url: obj.notion_url,
         }
         return article
@@ -42,13 +41,12 @@ export class ArticleRepository {
         if (!list) throw errorBuilder(404, 'Items not found')
 
         const articles: TrimmedArticle[] = list.map((item: Article) => {
-            const { id, slug, title, url, created_at } = item
+            const { id, slug, title, created_at } = item
             return {
                 id,
                 slug,
                 title,
                 created_at,
-                url,
             }
         })
 
@@ -75,9 +73,7 @@ export class ArticleRepository {
         return formattedArticle
     }
 
-    public putData = async (
-        article: ArticleReqBody & { url: string },
-    ): Promise<Article> => {
+    public putData = async (article: ArticleReqBody): Promise<Article> => {
         const newArticle: Article = {
             id: v4(),
             ...article,
