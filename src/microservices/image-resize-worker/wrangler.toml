@@ -1,0 +1,20 @@
+name = "image-resize-worker"
+type = "javascript"
+workers_dev = true
+compatibility_date = "2022-01-20"
+account_id = "32ec5a45e61bb65267a5e522f2d1425d"
+[vars]
+WORKERS_RS_VERSION = "0.0.9"
+
+[build]
+command = "cargo install -q worker-build && worker-build --release" # required
+
+[build.upload]
+dir = "build/worker"
+format = "modules"
+main = "./shim.mjs"
+
+[[build.upload.rules]]
+globs = ["**/*.wasm"]
+type = "CompiledWasm"
+

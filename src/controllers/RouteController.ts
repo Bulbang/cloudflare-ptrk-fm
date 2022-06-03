@@ -10,6 +10,8 @@ import { articleUpdateSchema } from '../types/schemas/articles-update'
 import { errorBuilder } from '../utils/response/errors'
 import { isLatinWithoutWhitespace, toTranslit } from '../utils/slugUtils'
 import { getNotionBlocks } from '../utils/notion-utils'
+import { Env } from '../types/declarations/cfServices'
+import { resize } from '../utils/resizer'
 
 export class RouteController {
     constructor(
@@ -44,29 +46,72 @@ export class RouteController {
         )
         this._router.get('/notion-blocks', this._getNotionBlocks)
         this._router.get('/transliterate', this._generateSlug)
+        this._router.get('/resize', this._resize)
         this._router.options('/*', this._cors)
         this._router.all('/*', () =>
             errorResponse(errorBuilder(404, 'Not found')),
         )
     }
 
-    private _getImg = async (req: Request & { params: { id: string } }) => {
-        const { id } = req.params
+    private _resize = async (req: Request, env: Env) => {
+        const id = '424d08e1-9299-4710-b008-00ed9e8d47e9'
         try {
-            const img = await BUCKET.get(id)
+            const img = await env.BUCKET.get(id)
+            const formData = new FormData()
+            formData.append('image', await img.blob())
+            const reqToResize = new Request(req, {
+                body: formData,
+                method: 'POST',
+            })
+
+            const u8Res = await env.RESIZER.fetch(reqToResize)
+            const ab = await u8Res.arrayBuffer()
+            const bytes = new Uint8Array(ab)
+            const blob = new Blob([ab], { type: 'image/jpeg' })
+            return new Response(ab, {
+                headers: { 'Content-Type': 'image/jpeg' },
+            })
+        } catch (error) {
+            console.log(error.toString())
+            return errorResponse(errorBuilder(500, 'Getting image error'))
+        }
+    }
+
+    private _getImg = async (
+        req: Request & { params: { id: string } },
+        env: Env,
+    ) => {
+        const { id } = req.params
+        const url = new URL(req.url)
+        const [width, height] = url.searchParams.has('size')
+            ? url.searchParams.get('size').split('x')
+            : [undefined, undefined]
+        try {
+            const img = await env.BUCKET.get(id)
             if (!img) {
                 return errorResponse(
                     errorBuilder(404, `Image by id ${id} not found`),
                 )
             }
-            return new Response(await img.blob())
+            const imgBlob = await img.blob()
+            if (width && height) {
+                const resized = await resize({
+                    width,
+                    height,
+                    imgBlob,
+                    req,
+                    env,
+                })
+                return resized
+            }
+            return new Response(imgBlob)
         } catch (error) {
-            console.log(error)
+            console.log(error.toString())
             return errorResponse(errorBuilder(500, 'Getting image error'))
         }
     }
 
-    private _uploadImg = async (req: Request) => {
+    private _uploadImg = async (req: Request, env: Env) => {
         const contentType = req.headers.has('content-type')
             ? req.headers.get('content-type')
             : undefined
@@ -82,7 +127,7 @@ export class RouteController {
         }
 
         try {
-            await BUCKET.put(fileId, req.body, {
+            await env.BUCKET.put(fileId, req.body, {
                 httpMetadata: { contentType },
             })
             return okResponse({ fileId })
@@ -92,7 +137,11 @@ export class RouteController {
         }
     }
 
-    private _getArticles = async (req: Request): Promise<Response> => {
+    private _getArticles = async (
+        req: Request,
+        env: Env,
+    ): Promise<Response> => {
+        this._articleRepository.kvNamespace = env.ARTICLES
         try {
             const url = new URL(req.url)
             const articles = await this._articleRepository.getMany({
@@ -106,7 +155,9 @@ export class RouteController {
 
     private _getArticle = async (
         req: Request & { params: { id: string } },
+        env: Env,
     ): Promise<Response> => {
+        this._articleRepository.kvNamespace = env.ARTICLES
         try {
             const article = await this._articleRepository.getById(req.params.id)
             return okResponse<Article>(article)
@@ -116,7 +167,7 @@ export class RouteController {
         }
     }
 
-    private _putArticle = async (req: Request): Promise<Response> => {
+    private _putArticle = async (req: Request, env: Env): Promise<Response> => {
         const body = await req.json<ArticleReqBody>()
         const {
             title,
@@ -140,6 +191,7 @@ export class RouteController {
             slug: slug.toLowerCase(),
             notion_blocks,
         }
+        this._articleRepository.kvNamespace = env.ARTICLES
         try {
             const newArticle = await this._articleRepository.putData(article)
             return okResponse(newArticle)
@@ -150,7 +202,9 @@ export class RouteController {
 
     private _updateArticle = async (
         req: Request & { params: { id: string } },
+        env: Env,
     ): Promise<Response> => {
+        this._articleRepository.kvNamespace = env.ARTICLES
         try {
             const idOfArticleToUpdate = req.params.id
             const dataToUpdate = await req.json<ArticleReqBody>()
@@ -176,7 +230,10 @@ export class RouteController {
         const slug = toTranslit(title)
         return okResponse(slug)
     }
-    private _getNotionBlocks = async (req: Request): Promise<Response> => {
+    private _getNotionBlocks = async (
+        req: Request,
+        env: Env,
+    ): Promise<Response> => {
         const url = new URL(req.url)
         const notion_url = url.searchParams.has('notion_url')
             ? url.searchParams.get('notion_url')
@@ -198,7 +255,9 @@ export class RouteController {
     }
     private _refreshNotionNotionBlocks = async (
         req: Request & { params: { id: string } },
+        env: Env,
     ): Promise<Response> => {
+        this._articleRepository.kvNamespace = env.ARTICLES
         const { id } = req.params
         try {
             const refreshedArticle =

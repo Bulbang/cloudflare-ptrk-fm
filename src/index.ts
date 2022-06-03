@@ -6,6 +6,6 @@ import { ArticleRepository } from './repositories/ArticleRepository'
 const routeController = new RouteController(Router(), new ArticleRepository())
 const router = routeController.getRouter
 
-addEventListener('fetch', (e) => {
-    e.respondWith(router.handle(e.request))
-})
+export default {
+    fetch: router.handle,
+}

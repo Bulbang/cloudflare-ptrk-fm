@@ -19,7 +19,15 @@ kv_namespaces = [
 binding = 'BUCKET'
 bucket_name = 'ptrk'
 
+# After deployment you should create a Service Bindings manually in cloudflare to enable image resizing
+# Workers -> *your_worker* -> settings -> service bindings -> add variable -> set name "RESIZER", choose service, choose environment.
+
 [build]
 command = "yarn install --freeze-lockfile && yarn build"
 [build.upload]
-format = "service-worker"
+format = "modules"
+dir = "./dist"
+main = "./index.js"
+[[build.upload.rules]]
+type = "ESModule"
+globs = ["**/*.js"]

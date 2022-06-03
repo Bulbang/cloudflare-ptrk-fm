@@ -5,7 +5,12 @@ import { getNotionBlocks } from '../utils/notion-utils'
 import { errorBuilder } from '../utils/response/errors'
 
 export class ArticleRepository {
+    private ARTICLES: KVNamespace
     constructor() {}
+
+    public set kvNamespace(namespace: KVNamespace) {
+        this.ARTICLES = namespace
+    }
 
     private createArticleObj(obj: any): Article {
         const article: Article = {
@@ -28,10 +33,10 @@ export class ArticleRepository {
     }): Promise<TrimmedArticle[]> => {
         let list: Article[]
         try {
-            const { keys } = await ARTICLES.list()
+            const { keys } = await this.ARTICLES.list()
             list = await Promise.all(
                 keys.map(async (key) =>
-                    JSON.parse(await ARTICLES.get(key.name)),
+                    JSON.parse(await this.ARTICLES.get(key.name)),
                 ),
             )
         } catch (error) {
@@ -62,7 +67,7 @@ export class ArticleRepository {
     public getById = async (id: string): Promise<Article> => {
         let article: Article
         try {
-            article = JSON.parse(await ARTICLES.get(id))
+            article = JSON.parse(await this.ARTICLES.get(id))
         } catch (error) {
             throw errorBuilder(500, 'KV get operation error')
         }
@@ -82,7 +87,7 @@ export class ArticleRepository {
         }
 
         try {
-            await ARTICLES.put(newArticle.id, JSON.stringify(newArticle))
+            await this.ARTICLES.put(newArticle.id, JSON.stringify(newArticle))
             return newArticle
         } catch (error) {
             console.log(error)
@@ -110,7 +115,7 @@ export class ArticleRepository {
         article['updated_at'] = +new Date()
 
         try {
-            await ARTICLES.put(article.id, JSON.stringify(article))
+            await this.ARTICLES.put(article.id, JSON.stringify(article))
         } catch (error) {
             throw errorBuilder(500, 'KV put operation error')
         }
@@ -123,7 +128,7 @@ export class ArticleRepository {
         article.notion_blocks = await getNotionBlocks(article.notion_url)
         try {
             console.log(article)
-            await ARTICLES.put(article.id, JSON.stringify(article))
+            await this.ARTICLES.put(article.id, JSON.stringify(article))
             return article
         } catch (error) {
             console.log(error)
