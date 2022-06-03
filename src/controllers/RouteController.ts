@@ -46,35 +46,10 @@ export class RouteController {
         )
         this._router.get('/notion-blocks', this._getNotionBlocks)
         this._router.get('/transliterate', this._generateSlug)
-        this._router.get('/resize', this._resize)
         this._router.options('/*', this._cors)
         this._router.all('/*', () =>
             errorResponse(errorBuilder(404, 'Not found')),
         )
-    }
-
-    private _resize = async (req: Request, env: Env) => {
-        const id = '424d08e1-9299-4710-b008-00ed9e8d47e9'
-        try {
-            const img = await env.BUCKET.get(id)
-            const formData = new FormData()
-            formData.append('image', await img.blob())
-            const reqToResize = new Request(req, {
-                body: formData,
-                method: 'POST',
-            })
-
-            const u8Res = await env.RESIZER.fetch(reqToResize)
-            const ab = await u8Res.arrayBuffer()
-            const bytes = new Uint8Array(ab)
-            const blob = new Blob([ab], { type: 'image/jpeg' })
-            return new Response(ab, {
-                headers: { 'Content-Type': 'image/jpeg' },
-            })
-        } catch (error) {
-            console.log(error.toString())
-            return errorResponse(errorBuilder(500, 'Getting image error'))
-        }
     }
 
     private _getImg = async (
