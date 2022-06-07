@@ -151,7 +151,7 @@ export class RouteController {
             file_id,
             notion_url,
             slug,
-            notion_blocks,
+            blocks,
         } = body
 
         if (!isLatinWithoutWhitespace(slug.toLowerCase()))
@@ -164,7 +164,7 @@ export class RouteController {
             file_id,
             notion_url,
             slug: slug.toLowerCase(),
-            notion_blocks,
+            blocks,
         }
         this._articleRepository.kvNamespace = env.ARTICLES
         try {
@@ -222,8 +222,8 @@ export class RouteController {
             )
         }
         try {
-            const notion_blocks = await getNotionBlocks(notion_url)
-            return okResponse(notion_blocks)
+            const blocks = await getNotionBlocks(notion_url)
+            return okResponse(blocks)
         } catch (error) {
             return errorResponse(error)
         }

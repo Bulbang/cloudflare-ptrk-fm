@@ -13,18 +13,28 @@ export class ArticleRepository {
     }
 
     private createArticleObj(obj: any): Article {
-        const article: Article = {
+        const article: Article = obj.notion_url.length? {
             id: obj.id,
             slug: obj.slug,
             title: obj.title,
             meta_title: obj.meta_title,
             meta_description: obj.meta_description,
-            notion_blocks: obj.notion_blocks,
+            blocks: obj.blocks,
             created_at: obj.created_at,
             updated_at: obj.updated_at,
             file_id: obj.file_id,
             notion_url: obj.notion_url,
-        }
+        } : {
+            id: obj.id,
+            slug: obj.slug,
+            title: obj.title,
+            meta_title: obj.meta_title,
+            meta_description: obj.meta_description,
+            blocks: obj.blocks,
+            created_at: obj.created_at,
+            updated_at: obj.updated_at,
+            file_id: obj.file_id,
+        } 
         return article
     }
 
@@ -108,7 +118,7 @@ export class ArticleRepository {
 
         for (const [key, val] of Object.entries(updateValues)) {
             if (key === 'notion_url')
-                article['notion_blocks'] = await getNotionBlocks(val as string)
+                article['blocks'] = await getNotionBlocks(val as string)
 
             article[key] = val
         }
@@ -125,7 +135,10 @@ export class ArticleRepository {
 
     public refreshNotionBlocks = async (id: string) => {
         const article = await this.getById(id)
-        article.notion_blocks = await getNotionBlocks(article.notion_url)
+        if (!article.notion_url) {
+            throw errorBuilder(400, 'Can`t refresh notion blocks in the editor article')
+        }
+        article.blocks = await getNotionBlocks(article.notion_url)
         try {
             console.log(article)
             await this.ARTICLES.put(article.id, JSON.stringify(article))

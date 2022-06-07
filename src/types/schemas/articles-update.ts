@@ -6,6 +6,7 @@ export const articleUpdateSchema = z
         meta_title: z.string(),
         meta_description: z.string(),
         notion_url: z.string(),
+        blocks: z.any(),
     })
     .partial()
     .strict()

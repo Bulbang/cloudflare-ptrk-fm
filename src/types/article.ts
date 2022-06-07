@@ -7,12 +7,8 @@ export type Article = {
     created_at: number
     updated_at: number
     file_id: string
-    notion_blocks: {
-        props: {
-            blockMap: unknown
-        }
-    }
-    notion_url: string
+    blocks: any
+    notion_url?: string
 }
 
 export type ArticleReqBody = Omit<
@@ -27,6 +23,6 @@ export type TrimmedArticle = Omit<
     | 'updated_at'
     | 'file_id'
     | 'body'
-    | 'notion_blocks'
+    | 'blocks'
     | 'notion_url'
 >

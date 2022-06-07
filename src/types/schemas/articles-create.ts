@@ -6,10 +6,8 @@ export const articleCreateSchema = z
         meta_title: z.string(),
         meta_description: z.string(),
         file_id: z.string(),
-        notion_url: z.string(),
-        notion_blocks: z.object({
-            props: z.any(),
-        }),
+        notion_url: z.string().url().nullable(),
+        blocks: z.object({}),
         slug: z.string(),
     })
     .strict()

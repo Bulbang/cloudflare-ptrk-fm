@@ -5,15 +5,19 @@ const corsHeaders = {
     Vary: 'Origin',
 }
 
-export const okResponse = <TBody>(body?: TBody): Response => {
+export const okResponse = <TBody>(
+    body?: TBody,
+    headers?: { [header: string]: string },
+): Response => {
     const options = {
         status: 200,
         statusText: 'OK',
-        headers: corsHeaders,
+        headers: { ...corsHeaders, ...headers },
     }
 
     return new Response(body ? JSON.stringify(body) : 'ok', options)
 }
+okResponse 
 
 export const errorResponse = (error: HttpError): Response => {
     const { message, status, statusText } = error

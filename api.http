@@ -18,7 +18,7 @@ GET /articles
 #   title: string,
 #   meta_title: string, 
 #   meta_description: string, 
-#   notion_blocks: { 
+#   blocks: { 
 #     props: { 
 #       blockMap: { 
 #           [key:string]: NotionBlock 
@@ -41,7 +41,7 @@ POST /articles/create
 Content-Type: application/json
 # "notion_url" is notion article url
 # "slug" should be lowercase latin word without
-# "notion_blocks" you can get from GET /notion-blocks
+# "blocks" you can get from GET /notion-blocks
 {
     "title": "asdfdfd",
     "meta_title": "qwevhgfxrty212458",
@@ -49,7 +49,7 @@ Content-Type: application/json
     "slug": "contentqweadfhsfbvsdfdnty311121",
     "notion_url": "url",
     "file_id": "d9bdbf96-b972-4692-a160-4c0fa9158a3c",
-    "notion_blocks": "dsaasdasdasdasd"
+    "blocks": "dsaasdasdasdasd"
 }
 
 
