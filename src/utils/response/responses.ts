@@ -17,7 +17,7 @@ export const okResponse = <TBody>(
 
     return new Response(body ? JSON.stringify(body) : 'ok', options)
 }
-okResponse 
+okResponse
 
 export const errorResponse = (error: HttpError): Response => {
     const { message, status, statusText } = error

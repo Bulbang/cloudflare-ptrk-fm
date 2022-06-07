@@ -13,28 +13,30 @@ export class ArticleRepository {
     }
 
     private createArticleObj(obj: any): Article {
-        const article: Article = obj.notion_url? {
-            id: obj.id,
-            slug: obj.slug,
-            title: obj.title,
-            meta_title: obj.meta_title,
-            meta_description: obj.meta_description,
-            blocks: obj.blocks,
-            created_at: obj.created_at,
-            updated_at: obj.updated_at,
-            file_id: obj.file_id,
-            notion_url: obj.notion_url,
-        } : {
-            id: obj.id,
-            slug: obj.slug,
-            title: obj.title,
-            meta_title: obj.meta_title,
-            meta_description: obj.meta_description,
-            blocks: obj.blocks,
-            created_at: obj.created_at,
-            updated_at: obj.updated_at,
-            file_id: obj.file_id,
-        } 
+        const article: Article = obj.notion_url
+            ? {
+                  id: obj.id,
+                  slug: obj.slug,
+                  title: obj.title,
+                  meta_title: obj.meta_title,
+                  meta_description: obj.meta_description,
+                  blocks: obj.blocks,
+                  created_at: obj.created_at,
+                  updated_at: obj.updated_at,
+                  file_id: obj.file_id,
+                  notion_url: obj.notion_url,
+              }
+            : {
+                  id: obj.id,
+                  slug: obj.slug,
+                  title: obj.title,
+                  meta_title: obj.meta_title,
+                  meta_description: obj.meta_description,
+                  blocks: obj.blocks,
+                  created_at: obj.created_at,
+                  updated_at: obj.updated_at,
+                  file_id: obj.file_id,
+              }
         return article
     }
 
@@ -136,7 +138,10 @@ export class ArticleRepository {
     public refreshNotionBlocks = async (id: string) => {
         const article = await this.getById(id)
         if (!article.notion_url) {
-            throw errorBuilder(400, 'Can`t refresh notion blocks in the editor article')
+            throw errorBuilder(
+                400,
+                'Can`t refresh notion blocks in the editor article',
+            )
         }
         article.blocks = await getNotionBlocks(article.notion_url)
         try {

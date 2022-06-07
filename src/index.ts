@@ -8,7 +8,11 @@ import { ArticleRepository } from './repositories/ArticleRepository'
 
 const articleRepository = new ArticleRepository()
 
-const director = new RouteDirector(Router(), [new ArticleRouteController(articleRepository), new ImageRouteController(), new UtilsRouteController()])
+const director = new RouteDirector(Router(), [
+    new ArticleRouteController(articleRepository),
+    new ImageRouteController(),
+    new UtilsRouteController(),
+])
 
 const router = director.buildRouter()
 
