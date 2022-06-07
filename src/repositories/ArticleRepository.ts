@@ -13,7 +13,7 @@ export class ArticleRepository {
     }
 
     private createArticleObj(obj: any): Article {
-        const article: Article = obj.notion_url.length? {
+        const article: Article = obj.notion_url? {
             id: obj.id,
             slug: obj.slug,
             title: obj.title,
