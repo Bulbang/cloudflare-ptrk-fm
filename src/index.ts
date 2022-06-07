@@ -1,10 +1,16 @@
 import { Router } from 'itty-router'
+import { ArticleRouteController } from './controllers/ArticleRouteController'
+import { ImageRouteController } from './controllers/ImageRouteController'
 
-import { RouteController } from './controllers/RouteController'
+import { RouteDirector } from './controllers/RouteDirector'
+import { UtilsRouteController } from './controllers/UtilsRouteConrtoller'
 import { ArticleRepository } from './repositories/ArticleRepository'
 
-const routeController = new RouteController(Router(), new ArticleRepository())
-const router = routeController.getRouter
+const articleRepository = new ArticleRepository()
+
+const director = new RouteDirector(Router(), [new ArticleRouteController(articleRepository), new ImageRouteController(), new UtilsRouteController()])
+
+const router = director.buildRouter()
 
 export default {
     fetch: router.handle,
