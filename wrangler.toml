@@ -2,7 +2,7 @@ name = "ptrk-fm-worker"
 type = "javascript"
 
 ### Workers -> AccountID
-account_id = "32ec5a45e61bb65267a5e522f2d1425d" 
+account_id = "" 
 
 workers_dev = true
 compatibility_date = "2022-03-11"
@@ -10,7 +10,7 @@ compatibility_date = "2022-03-11"
 # this should be created manually in cloudflare..
 # workers -> worker -> settings -> KV namespace bindings
 kv_namespaces = [ 
-  { binding = "ARTICLES", id = "5d92f3a61bc74405a943c16bfad932e4" } 
+  { binding = "ARTICLES", id = "" } 
 ]
 
 # This should be created manually in cloudflare..
